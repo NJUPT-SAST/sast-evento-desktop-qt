@@ -54,7 +54,7 @@ jobs:
         run: |
           sudo macdeployqt bin/release/SAST_Evento_Desktop.app -qmldir=. -verbose=1 -dmg
        
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         if: startsWith(github.event.ref, 'refs/tags/')
         with:
           name: ${{ env.targetName }}_${{ matrix.os }}

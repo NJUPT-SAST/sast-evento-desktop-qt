@@ -68,7 +68,7 @@ jobs:
           $name = ${env:archiveName}
           echo "::set-output name=packageName::$name"       
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         if: startsWith(github.event.ref, 'refs/tags/')
         with:
           name: ${{ steps.package.outputs.packageName }}
