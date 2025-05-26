@@ -10,6 +10,7 @@ class LoginController : public QObject {
     QML_SINGLETON
 
 private:
+    QTcpServer* login_redirect_tcp_server = nullptr;
     QHttpServer* login_redirect_server = nullptr;
     QString state;
     QString code_verifier;
@@ -34,6 +35,10 @@ public:
 private:
     void setup_server();
     inline void close_tcp_listen() {
+        if (login_redirect_tcp_server) {
+            login_redirect_tcp_server->deleteLater();
+            login_redirect_tcp_server = nullptr;
+        }
         if (login_redirect_server) {
             login_redirect_server->deleteLater();
             login_redirect_server = nullptr;

@@ -113,9 +113,10 @@ static QString genCodeChallengeS256(QStringView code_verifier) {
 }
 
 void LoginController::setup_server() {
-    if (login_redirect_server)
+    if (login_redirect_server || login_redirect_tcp_server)
         return;
     login_redirect_server = new QHttpServer;
+    login_redirect_tcp_server = new QTcpServer;
     login_redirect_server->route("/", [this](const QHttpServerRequest& request) {
         // OAuth 2.0 Redirect Uri
         auto status_code = QHttpServerResponder::StatusCode::Ok;
@@ -176,13 +177,10 @@ void LoginController::setup_server() {
         else
             resp = QHttpServerResponse("text/html", ERROR_RESPONSE.arg(errorDescription).toUtf8(),
                                        status_code);
-        resp.setHeader("Access-Control-Allow-Origin", "https://link.sast.fun");
-        resp.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
-        resp.setHeader("Access-Control-Allow-Headers",
-                       "Origin, Content-Type, Accept, Authorization");
         return resp;
     });
-    login_redirect_server->listen(QHostAddress::LocalHost, 1919);
+    login_redirect_tcp_server->listen(QHostAddress::LocalHost, 1919);
+    login_redirect_server->bind(login_redirect_tcp_server);
 }
 
 LoginController* LoginController::create(QQmlEngine*, QJSEngine*) {
