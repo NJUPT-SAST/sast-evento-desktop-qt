@@ -95,7 +95,7 @@ void EventoService::handle_schedule(std::vector<DTO_Evento>&& data) {
                         return EventoPromise<std::optional<Schedule>>::resolve(std::nullopt);
                     }
                     return getRepo()->hasFeedbacked(evento.id).then(
-                        [participation = participation.take(), evento = std::move(evento)](
+                        [participation = participation.take(), evento](
                             EventoResult<bool> has_feedback) -> std::optional<Schedule> {
                             if (!has_feedback &&
                                 has_feedback.code() != EventoExceptionCode::FalseValue) {
